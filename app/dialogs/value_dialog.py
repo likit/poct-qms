@@ -3,7 +3,7 @@ import wx
 from app.extension import engine
 from sqlalchemy.orm import sessionmaker
 from ObjectListView import ObjectListView, ColumnDefn
-from app.controller.test_status_dialog import *
+from app.controller.value_dialog import *
 
 Session = sessionmaker(bind=engine)
 

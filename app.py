@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.extension import engine, Base, GenericDBClass
 from app.views.preview_grid import PreviewGridDialog
-from app.dialogs.test_status import ValueDialog
+from app.dialogs.value_dialog import ValueDialog
 from app.models.values import TestStatus, ErrorCause
 
 Base.metadata.create_all(engine)
