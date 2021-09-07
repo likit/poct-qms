@@ -33,12 +33,12 @@ class MainWindow(wx.Frame):
         self.setData(self.records, self.columns)
         self.pathName = ''
         data_source_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, panel, 'Data source')
-        self.datapath = wx.StaticText(panel, id=wx.ID_ANY, label='No data loaded.')
+        self.datapath = wx.StaticText(data_source_sizer.GetStaticBox(), id=wx.ID_ANY, label='No data loaded.')
         data_source_sizer.Add(self.datapath, 0, wx.EXPAND)
         toolbar_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, panel, 'Shortcut')
-        import_btn = wx.Button(panel, wx.ID_ANY, label='Import Data')
+        import_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Import Data')
         import_btn.Bind(wx.EVT_BUTTON, self.onImportMenuItemClick)
-        self.scan_btn = wx.Button(panel, wx.ID_ANY, label='Scan Column')
+        self.scan_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Scan Column')
         self.scan_btn.Disable()
         self.scan_btn.Bind(wx.EVT_BUTTON, self.onScanBtnClick)
         toolbar_sizer.Add(import_btn, 0, wx.ALL, 2)
@@ -75,13 +75,13 @@ class MainWindow(wx.Frame):
 
     def onTestStatusMenuItemClick(self, event):
         columns = ['id', 'status']
-        with ValueDialog(self, columns, TestStatus, 'status', size=(480, 480), title='Test Status List') as dlg:
+        with ValueDialog(self, columns, TestStatus, 'status', size=(600, 400), title='Test Status List') as dlg:
             if dlg.ShowModal() == wx.OK:
                 print('It is ok.')
 
     def onErrorCauseMenuItemClick(self, event):
         columns = ['id', 'cause']
-        with ValueDialog(self, columns, ErrorCause, 'cause', size=(480, 480), title='Error Cause List') as dlg:
+        with ValueDialog(self, columns, ErrorCause, 'cause', size=(600, 400), title='Error Cause List') as dlg:
             if dlg.ShowModal() == wx.OK:
                 print('It is ok.')
 
