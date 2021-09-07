@@ -3,6 +3,7 @@ import pandas as pd
 
 class OlvRecord:
     def __init__(self, id, kwargs):
+        self.id = id
         for k,v in kwargs.items():
             setattr(self, k, v)
 
