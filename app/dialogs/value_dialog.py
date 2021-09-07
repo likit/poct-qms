@@ -115,7 +115,6 @@ class ValueDialog(wx.Dialog):
                     if columnDialog.ShowModal() == wx.ID_OK:
                         column = columnDialog.GetStringSelection()
                         values = set(df[column])
-                        print(values)
                         for val in values:
                             if pd.isna(val):
                                 continue
