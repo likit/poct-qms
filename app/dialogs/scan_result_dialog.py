@@ -21,14 +21,16 @@ class ScanResultDialog(wx.Dialog):
         self.error_entry = wx.ComboBox(self, value='',
                                         choices=self.error_choices,
                                         style=wx.CB_SORT | wx.CB_READONLY)
+        self.apply_to_all = wx.CheckBox(self, label='Apply to all')
         save_button = wx.Button(self, label='Save')
         save_button.Bind(wx.EVT_BUTTON, self.onSaveButtonClicked)
         button_sizer.Add(status_label)
         button_sizer.Add(self.status_entry, 1, wx.EXPAND)
         button_sizer.Add(error_label)
         button_sizer.Add(self.error_entry, 1, wx.EXPAND)
+        button_sizer.Add(self.apply_to_all)
         button_sizer.Add(save_button, 0, wx.TOP | wx.EXPAND, 20)
-        buttons = self.CreateButtonSizer(wx.CANCEL | wx.OK)
+        buttons = self.CreateButtonSizer(wx.OK)
         self.dataOlv = ObjectListView(self, style=wx.LC_REPORT | wx.SUNKEN_BORDER)
         self.dataOlv.Bind(wx.EVT_LIST_ITEM_SELECTED, self.onItemSelected)
         hsizer.Add(self.dataOlv, 1, wx.EXPAND | wx.LEFT | wx.TOP, 10)
@@ -61,5 +63,14 @@ class ScanResultDialog(wx.Dialog):
     def onSaveButtonClicked(self, event):
         selected_row = self.dataOlv.GetSelectedObject()
         selected_row.payment_status = self.status_entry.GetStringSelection()
-        selected_row.error_cause = self.error_entry.GetStringSelection()
-        self.dataOlv.RefreshObject(selected_row)
+        new_error_cause = self.error_entry.GetStringSelection()
+        selected_row.error_cause = new_error_cause
+        if self.apply_to_all.IsChecked():
+            for rec in self.records:
+                if rec.payment_status == self.status_entry.GetStringSelection():
+                    rec.error_cause = new_error_cause
+            self.dataOlv.RefreshObjects(self.records)
+        else:
+            self.dataOlv.RefreshObject(selected_row)
+
+        self.apply_to_all.SetValue(False)
