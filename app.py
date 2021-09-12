@@ -3,8 +3,7 @@ import wx
 from ObjectListView import ObjectListView, ColumnDefn
 from sqlalchemy.orm import sessionmaker
 
-from app.extension import engine, Base, GenericDBClass
-from app.views.preview_grid import PreviewGridDialog
+from app.extension import engine, Base
 from app.dialogs.value_dialog import ValueDialog
 from app.dialogs.load_data_dialog import LoadDataDialog
 from app.dialogs.scan_result_dialog import ScanResultDialog
@@ -24,7 +23,7 @@ session = Session()
 
 
 class MainWindow(wx.Frame):
-    def __init__(self, parent=None, title='Main Window', size=(860, 640)):
+    def __init__(self, parent=None, title='Patient Analytics', size=(860, 640)):
         super(MainWindow, self).__init__(parent, title=title, size=size)
         panel = wx.Panel(self)
         self.dataOlv = ObjectListView(panel, style=wx.LC_REPORT | wx.SUNKEN_BORDER)
