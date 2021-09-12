@@ -8,8 +8,17 @@ class OlvRecord:
             setattr(self, k, v)
 
 
+def add_error_cause(row):
+    if row['Payment Status'] == 'Success':
+        return '-'
+    else:
+        return ''
+
+
 def load_and_convert(pathname, sheetname):
     df = pd.read_excel(pathname, sheet_name=sheetname)
+    df = df.dropna(how='all').fillna('')
+    df['error_cause'] = df.apply(add_error_cause, axis=1)
     columns = {}
     for col in df.columns:
         columns[col] = col.replace(' ', '_').lower()

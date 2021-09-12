@@ -10,17 +10,17 @@ from app.dialogs.load_data_dialog import LoadDataDialog
 from app.dialogs.scan_result_dialog import ScanResultDialog
 from app.models.values import TestStatus, ErrorCause
 
+import ctypes
+
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+except:
+    pass
+
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 session = Session()
-
-
-scan_dict = {
-    'สรุปสาเหตุ': (ErrorCause, 'cause'),
-    'payment_status': (TestStatus, 'status'),
-    'ward_no': (TestStatus, 'status')
-}
 
 
 class MainWindow(wx.Frame):
@@ -38,7 +38,7 @@ class MainWindow(wx.Frame):
         toolbar_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, panel, 'Shortcut')
         import_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Import Data')
         import_btn.Bind(wx.EVT_BUTTON, self.onImportMenuItemClick)
-        self.scan_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Scan Column')
+        self.scan_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Scan Errors')
         self.scan_btn.Disable()
         self.scan_btn.Bind(wx.EVT_BUTTON, self.onScanBtnClick)
         toolbar_sizer.Add(import_btn, 0, wx.ALL, 2)
@@ -50,6 +50,7 @@ class MainWindow(wx.Frame):
         self.createMenuBar()
         panel.SetSizer(vsizer)
         self.Layout()
+        self.Maximize(True)
         self.Show()
 
     def createMenuBar(self):
@@ -92,9 +93,8 @@ class MainWindow(wx.Frame):
                 return
             self.pathName = fileDialog.GetPath()
             if self.pathName:
-                with LoadDataDialog(self, self.pathName, title='Import Data', size=(640, 480)) as importDialog:
+                with LoadDataDialog(self, self.pathName, title='Data Preview', size=(800, 640)) as importDialog:
                     if importDialog.ShowModal() == wx.ID_OK:
-                        print('Closing the import dialog..')
                         self.records = importDialog.records
                         self.columns = importDialog.columns
                         self.datapath.SetLabel(self.pathName)
@@ -102,22 +102,12 @@ class MainWindow(wx.Frame):
                         self.scan_btn.Enable()
 
     def onScanBtnClick(self, event):
-        with wx.SingleChoiceDialog(self, 'What column you want to scan?',
-                                   'Choose column', self.columns) as dialog:
-            if dialog.ShowModal() == wx.ID_OK:
-                col = dialog.GetStringSelection()
-                if col in scan_dict:
-                    not_founds = []
-                    model, attr = scan_dict[col]
-                    values = set()
-                    for rec in session.query(model).all():
-                        values.add(getattr(rec, attr))
-                    for rec in self.records:
-                        if getattr(rec, col) not in values:
-                            not_founds.append(rec)
-                    if not_founds:
-                        with ScanResultDialog(self, self.records, [col]) as dialog:
-                            dialog.ShowModal()
+        with ScanResultDialog(self, self.records,
+                              self.columns,
+                              session=session,
+                              title='Not Success') as dialog:
+            dialog.ShowModal()
+            self.dataOlv.RefreshObjects(dialog.records)
 
     def setData(self, data=[], columns=[]):
         """Update the ObjectListView widget's contents """
