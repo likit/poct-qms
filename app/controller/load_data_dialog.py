@@ -9,7 +9,7 @@ class OlvRecord:
 
 
 def add_error_cause(row):
-    if row['Payment Status'] == 'Success':
+    if row['Payment Status'] == 'Success' or row['Payment Status'] == 'MV':
         return '-'
     else:
         return ''
