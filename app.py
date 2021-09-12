@@ -9,6 +9,7 @@ from app.dialogs.load_data_dialog import LoadDataDialog
 from app.dialogs.scan_result_dialog import ScanResultDialog
 from app.models.values import TestStatus, ErrorCause
 from app.models.patient_warehouse import *
+from app.controller.store_data import store_data
 
 import ctypes
 
@@ -42,8 +43,12 @@ class MainWindow(wx.Frame):
         self.scan_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Check Errors')
         self.scan_btn.Disable()
         self.scan_btn.Bind(wx.EVT_BUTTON, self.onScanBtnClick)
+        self.store_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Store Data')
+        self.store_btn.Disable()
+        self.store_btn.Bind(wx.EVT_BUTTON, self.onStoreBtnClick)
         toolbar_sizer.Add(import_btn, 0, wx.ALL, 2)
         toolbar_sizer.Add(self.scan_btn, 0, wx.ALL, 2)
+        toolbar_sizer.Add(self.store_btn, 0, wx.ALL, 2)
         vsizer = wx.BoxSizer(wx.VERTICAL)
         vsizer.Add(toolbar_sizer, 0, wx.EXPAND | wx.ALL, 5)
         vsizer.Add(data_source_sizer, 0, wx.ALL | wx.EXPAND, 5)
@@ -101,6 +106,7 @@ class MainWindow(wx.Frame):
                         self.datapath.SetLabel(self.pathName)
                         self.setData(self.records, self.columns)
                         self.scan_btn.Enable()
+                        self.store_btn.Enable()
 
     def onScanBtnClick(self, event):
         with ScanResultDialog(self, self.records,
@@ -109,6 +115,9 @@ class MainWindow(wx.Frame):
                               title='Not Success') as dialog:
             dialog.ShowModal()
             self.dataOlv.RefreshObjects(dialog.records)
+
+    def onStoreBtnClick(self, event):
+        store_data(self.records)
 
     def setData(self, data=[], columns=[]):
         """Update the ObjectListView widget's contents """

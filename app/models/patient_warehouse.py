@@ -1,5 +1,6 @@
 from app.extension import PatientBase
 from sqlalchemy import Column, String, Integer, DateTime, Date, ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class TestFact(PatientBase):
@@ -9,6 +10,12 @@ class TestFact(PatientBase):
     test_date_id = Column(ForeignKey('dim_dates.id'))
     operator_id = Column(ForeignKey('dim_operators.id'))
     analyzer_id = Column(ForeignKey('dim_analyzers.id'))
+    status = Column(String(255))
+    error_cause = Column(String(255))
+
+    analyzer = relationship('DimAnalyzer')
+    operator = relationship('DimOperator')
+    test_date = relationship('DimDate')
 
 
 class DimOperator(PatientBase):
@@ -22,9 +29,13 @@ class DimDate(PatientBase):
     __tablename__ = 'dim_dates'
     id = Column(Integer, primary_key=True)
     day = Column(Integer)
-    month = Column(Integer)
+    month_no = Column(Integer)
+    month = Column(String(16))
     quarter = Column(Integer)
-    day_no = Column(Integer)
+    day_of_year = Column(Integer)
+    day_of_week = Column(Integer)
+    weekday = Column(String(16))
+    buddhist_year = Column(Integer)
     gregorian_year = Column(Integer)
     fiscal_year = Column(Integer)
 
