@@ -38,7 +38,7 @@ class MainWindow(wx.Frame):
         toolbar_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, panel, 'Shortcut')
         import_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Import Data')
         import_btn.Bind(wx.EVT_BUTTON, self.onImportMenuItemClick)
-        self.scan_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Scan Errors')
+        self.scan_btn = wx.Button(toolbar_sizer.GetStaticBox(), wx.ID_ANY, label='Check Errors')
         self.scan_btn.Disable()
         self.scan_btn.Bind(wx.EVT_BUTTON, self.onScanBtnClick)
         toolbar_sizer.Add(import_btn, 0, wx.ALL, 2)
