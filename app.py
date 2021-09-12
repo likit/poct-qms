@@ -3,11 +3,12 @@ import wx
 from ObjectListView import ObjectListView, ColumnDefn
 from sqlalchemy.orm import sessionmaker
 
-from app.extension import engine, Base
+from app.extension import engine, Base, PatientBase, patient_engine
 from app.dialogs.value_dialog import ValueDialog
 from app.dialogs.load_data_dialog import LoadDataDialog
 from app.dialogs.scan_result_dialog import ScanResultDialog
 from app.models.values import TestStatus, ErrorCause
+from app.models.patient_warehouse import *
 
 import ctypes
 
@@ -17,6 +18,7 @@ except:
     pass
 
 Base.metadata.create_all(engine)
+PatientBase.metadata.create_all(patient_engine)
 
 Session = sessionmaker(bind=engine)
 session = Session()
